@@ -8,6 +8,7 @@ def extract_courses_by_year(year):
 
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
 
 url = extract_courses_by_year(2026)
 
@@ -51,42 +52,45 @@ for block in blocks:
     results.append({
         'label': label,
         'href': href,
-        'department': department,
-        'description': description
+        'department': department
     })
 
-# # Print results
-# for r in results:
-#     print(f"Label: {r['label']}")
-#     print(f"Href: {r['href']}")
-#     print(f"Department: {r['department']}")
-#     print(f"Description: {r['description']}")
-#     print('-' * 80)
-print(results[0])
+# Print results
+for r in results:
+    print(f"Label: {r['label']}")
+    print(f"Href: {r['href']}")
+    print(f"Department: {r['department']}")
+    print('-' * 80)
 
-###
-degree_types = []
+df = pd.DataFrame(results, columns=["degree_title", "link", "department"])
+df.to_csv("ucl_degrees.csv", index=False, encoding="utf-8")
 
-# Find all input elements with class 'facet-degree-level'
-inputs = soup.find_all('input', class_='facet-degree-level')
 
-for input_tag in inputs:
-    input_id = input_tag.get('id')
-    if not input_id:
-        continue
-    # Find the label with matching 'for' attribute
-    label = soup.find('label', attrs={'for': input_id})
-    if label:
-        # Extract label text without the count in parentheses
-        full_text = label.get_text(strip=True)
-        degree_type = full_text.split('(')[0].strip()
-        degree_types.append(degree_type)
 
-# Remove duplicates and sort
-degree_types = sorted(set(degree_types))
 
-# for degree in degree_types:
-#     print(degree)
+# ###
+# degree_types = []
 
-# print(degree_types)
+# # Find all input elements with class 'facet-degree-level'
+# inputs = soup.find_all('input', class_='facet-degree-level')
+
+# for input_tag in inputs:
+#     input_id = input_tag.get('id')
+#     if not input_id:
+#         continue
+#     # Find the label with matching 'for' attribute
+#     label = soup.find('label', attrs={'for': input_id})
+#     if label:
+#         # Extract label text without the count in parentheses
+#         full_text = label.get_text(strip=True)
+#         degree_type = full_text.split('(')[0].strip()
+#         degree_types.append(degree_type)
+
+# # Remove duplicates and sort
+# degree_types = sorted(set(degree_types))
+
+# # for degree in degree_types:
+# #     print(degree)
+
+# # print(degree_types)
 
